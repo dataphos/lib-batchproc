@@ -1,10 +1,12 @@
-package batchproc
+package batchproc_test
 
 import (
 	"context"
 	"strconv"
 	"sync"
 	"testing"
+
+	"github.com/dataphos/lib-batchproc/pkg/batchproc"
 )
 
 func TestProcess(t *testing.T) {
@@ -12,16 +14,17 @@ func TestProcess(t *testing.T) {
 		start int
 		end   int
 	}
+
 	type testCase struct {
 		collectionSize int
 		numWorkers     int
-		// expected       map[Batch]int
+		// expected       map[Batch]int.
 		actual map[batch]int
 		mtx    *sync.Mutex
 	}
 
 	cases := []testCase{
-		// basic Batch test
+		// basic Batch test.
 		{
 			collectionSize: 6,
 			numWorkers:     3,
@@ -33,7 +36,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// single worker
+		// single worker.
 		{
 			collectionSize: 100,
 			numWorkers:     1,
@@ -43,7 +46,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// single worker forced through collectionSize being less than numWorker
+		// single worker forced through collectionSize being less than numWorker.
 		{
 			collectionSize: 2,
 			numWorkers:     3,
@@ -53,7 +56,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// single, no-op worker since collectionSize is 0
+		// single, no-op worker since collectionSize is 0.
 		{
 			collectionSize: 0,
 			numWorkers:     3,
@@ -63,7 +66,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// collectionSize the same as numWorkers
+		// collectionSize the same as numWorkers.
 		{
 			collectionSize: 3,
 			numWorkers:     3,
@@ -75,7 +78,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// last Batch of a different size
+		// last Batch of a different size.
 		{
 			collectionSize: 51,
 			numWorkers:     4,
@@ -88,7 +91,7 @@ func TestProcess(t *testing.T) {
 			actual: make(map[batch]int),
 			mtx:    &sync.Mutex{},
 		},
-		// last Batch of a different size
+		// last Batch of a different size.
 		{
 			collectionSize: 7,
 			numWorkers:     2,
@@ -114,11 +117,12 @@ func TestProcess(t *testing.T) {
 			return nil
 		}
 
-		return Process(context.Background(), testCase.collectionSize, testCase.numWorkers, worker)
+		return batchproc.Process(context.Background(), testCase.collectionSize, testCase.numWorkers, worker)
 	}
 
 	for i, currentCase := range cases {
 		currentTestCase := currentCase
+
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			if err := test(currentTestCase); err != nil {
 				t.Fatal(err)
