@@ -76,7 +76,7 @@ jobs:
 
   licenses_check:
     name: 3rd Party Licenses Check
-    if: ${{ github.event.head_commit.committer.name != 'github-actions[bot]' && ! contains(github.head_ref, 'release-please--branches--main') }}
+    if: ${{ github.event.head_commit.committer.name != 'github-actions[bot]' || ! contains(github.head_ref, 'release-please--branches--main') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
