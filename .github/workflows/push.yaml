@@ -75,7 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr create --base ${{ github.ref_name }} --head "add-license-headers-${{ github.run_id }}" --title "Add License Headers" --body "This PR adds license headers to the affected files. Recommendation: Merge this PR using the rebase-merge method"
+          gh pr create --base ${{ github.ref_name }} --head "add-license-headers-${{ github.run_id }}" --title "style: add license headers" --body "This PR adds license headers to the affected files. Recommendation: Merge this PR using the rebase-merge method"
 
   release-please:
     if: github.ref_name == 'main'
